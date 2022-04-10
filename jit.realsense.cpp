@@ -312,6 +312,7 @@ t_jit_err jit_realsense_init(void)
     CLASS_ATTR_LABEL(s_jit_realsense_class, "rs_stream", 0, "Out 1 Stream");
     class_attr_enumindex(s_jit_realsense_class, "rs_stream",
                          "Depth", "Color", "Infrared", "Infrared 2",
+                         "Fisheye",
                          "Points", "Rectified color", "Color -> Depth",
                          "Infrared 2 -> Depth", "Depth -> Color", "Depth -> Rectified color",
                          "Depth -> Infrared 2");
@@ -340,6 +341,7 @@ t_jit_err jit_realsense_init(void)
             CLASS_ATTR_LABEL(s_jit_realsense_class, attr.c_str(), 0, pretty.c_str());
             class_attr_enumindex(s_jit_realsense_class, attr,
                                  "Depth", "Color", "Infrared", "Infrared 2",
+                                 "Fisheye",
                                  "Points", "Rectified color", "Color -> Depth",
                                  "Infrared 2 -> Depth", "Depth -> Color", "Depth -> Rectified color",
                                  "Depth -> Infrared 2");
