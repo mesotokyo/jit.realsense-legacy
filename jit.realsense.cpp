@@ -17,6 +17,7 @@ std::pair<rs::stream, rs::stream> native_streams(rs::stream other)
         case rs::stream::color: return make_pair(rs::stream::color, rs::stream::color);
         case rs::stream::infrared: return make_pair(rs::stream::infrared, rs::stream::infrared);
         case rs::stream::infrared2: return make_pair(rs::stream::infrared2, rs::stream::infrared2);
+        case rs::stream::fisheye: return make_pair(rs::stream::fisheye, rs::stream::fisheye);
         case rs::stream::points: return make_pair(rs::stream::depth, rs::stream::depth);
         case rs::stream::rectified_color: return make_pair(rs::stream::color, rs::stream::depth);
         case rs::stream::color_aligned_to_depth: return make_pair(rs::stream::color, rs::stream::depth);
@@ -46,6 +47,7 @@ rs::format best_format(rs::stream other)
 
         case rs::stream::rectified_color:
         case rs::stream::color_aligned_to_depth:
+        case rs::stream::fisheye:
         case rs::stream::color: return rs::format::rgb8;
     }
 }
@@ -457,6 +459,7 @@ int num_planes_from_stream(rs::stream other)
         case rs::stream::color: return 3;
         case rs::stream::infrared: return 1;
         case rs::stream::infrared2: return 1;
+        case rs::stream::fisheye: return 3;
         case rs::stream::points: return 3;
         case rs::stream::rectified_color: return 3;
         case rs::stream::color_aligned_to_depth: return 3;
@@ -486,6 +489,8 @@ int num_planes_from_format(long format)
         case rs::format::rgba8:
         case rs::format::bgra8:
         case rs::format::raw10:
+        case rs::format::raw8:
+        case rs::format::raw16:
             return 4;
     }
 }
@@ -509,6 +514,8 @@ t_symbol * symbol_from_format(long format)
             return _jit_sym_float32;
         // Weird cases :
         case rs::format::raw10:
+        case rs::format::raw8:
+        case rs::format::raw16:
         case rs::format::any:
             throw std::logic_error{"raw10, any unhandled"};
     }
@@ -530,6 +537,7 @@ t_symbol * symbol_from_stream(rs::stream stream)
         case rs::stream::color_aligned_to_depth:
         case rs::stream::infrared2_aligned_to_depth:
         case rs::stream::color:
+        case rs::stream::fisheye:
             return _jit_sym_char;
 
         case rs::stream::points:
@@ -624,6 +632,7 @@ void do_copy(rs::stream str, int size, const void* rs_matrix, char* max_matrix)
         case rs::stream::rectified_color:
         case rs::stream::color_aligned_to_depth:
         case rs::stream::infrared2_aligned_to_depth:
+        case rs::stream::fisheye:
         case rs::stream::color: return copier<rs::format::y8>{}(size, rs_matrix, max_matrix);
 
         case rs::stream::points: return copier<rs::format::xyz32f>{}(size, rs_matrix, max_matrix);
