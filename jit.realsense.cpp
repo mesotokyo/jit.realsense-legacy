@@ -545,7 +545,7 @@ struct copier<rs::format::z16>
         void operator()(int size, const void* rs_matrix, char* max_matrix)
         {
             auto image = (const uint16_t *) rs_matrix;
-            auto matrix_out = (long*) max_matrix;
+            auto matrix_out = (t_int32*) max_matrix;
 
             std::copy(image, image + size, matrix_out);
         }
@@ -558,7 +558,7 @@ struct copier<rs::format::y8>
         void operator()(int size, const void* rs_matrix, char* max_matrix)
         {
             auto image = (const uint8_t *) rs_matrix;
-            auto matrix_out = (char*) max_matrix;
+            auto matrix_out = (t_int8*) max_matrix;
 
             std::copy(image, image + size, matrix_out);
         }
