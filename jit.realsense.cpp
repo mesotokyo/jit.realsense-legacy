@@ -188,7 +188,7 @@ typedef struct _jit_realsense {
             if(dev->is_streaming())
                 dev->stop();
 
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < 3; i++)
                 dev->disable_stream((rs::stream)i);
 
         }
