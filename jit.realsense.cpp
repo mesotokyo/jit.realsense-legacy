@@ -206,7 +206,7 @@ END_USING_C_LINKAGE
 
 
 // globals
-static t_class* s_jit_realsense_class = NULL;
+static t_class* s_jit_realsense_class = nullptr;
 template <typename T, typename U>
 intptr_t get_offset(T U::*member)
 {
@@ -382,7 +382,7 @@ t_jit_err jit_realsense_init(void)
 
 t_jit_realsense *jit_realsense_new(void)
 {
-    t_jit_realsense	*x = NULL;
+    t_jit_realsense	*x = nullptr;
 
     x = (t_jit_realsense *)jit_object_alloc(s_jit_realsense_class);
     if (x)

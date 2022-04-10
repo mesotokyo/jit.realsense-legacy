@@ -51,7 +51,7 @@ void ext_main(void *)
 
     jit_realsense_init();
 
-    max_class = class_new("jit.realsense", (method)max_jit_realsense_new, (method)max_jit_realsense_free, sizeof(t_max_jit_realsense), NULL, A_GIMME, 0);
+    max_class = class_new("jit.realsense", (method)max_jit_realsense_new, (method)max_jit_realsense_free, sizeof(t_max_jit_realsense), nullptr, A_GIMME, 0);
     max_jit_class_obex_setup(max_class, calcoffset(t_max_jit_realsense, obex));
 
     jit_class = (maxclass*)jit_class_findbyname(gensym("jit_realsense"));
@@ -83,7 +83,7 @@ void *max_jit_realsense_new(t_symbol *, long argc, t_atom *argv)
         else {
             jit_object_error((t_object *)x, (char*)"jit.realsense: could not allocate object");
             object_free((t_object *)x);
-            x = NULL;
+            x = nullptr;
         }
     }
     return (x);
