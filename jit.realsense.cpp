@@ -4,6 +4,8 @@
 #include <cstdint>
 #include "jit.common.h"
 
+#include "rs_options.hpp"
+
 // To be able to iterate over rs::stream
 
 static const constexpr int jit_realsense_num_outlets = 6;
@@ -88,6 +90,8 @@ typedef struct _jit_realsense {
         long out_count_cache = 1;
         std::array<jit_rs_streaminfo, jit_realsense_num_outlets> outputs_cache;
 
+        jit_rs_options rs_options;
+
         void construct()
         {
             device = 0;
@@ -127,6 +131,8 @@ typedef struct _jit_realsense {
 
             device_cache = device;
             out_count_cache = out_count;
+
+            rs_options.update_options(dev);
         }
         catch(const std::exception & e)
         {
@@ -374,6 +380,8 @@ t_jit_err jit_realsense_init(void)
         }
     }
 
+    // add RealSense options as attributes
+    add_rs_option_attributes(s_jit_realsense_class);
 
     // finalize class
     jit_class_register(s_jit_realsense_class);
