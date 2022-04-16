@@ -36,6 +36,11 @@ t_jit_err jit_rs_options::set_value_for_name(rs::device* dev,
         error("the attribute %s not found.", str);
         return JIT_ERR_NONE;
     }
+    if (!dev)
+    {
+        error("Device is not connected.");
+        return JIT_ERR_NONE;
+    }
 
     jit_rs_option& o = options_cache[index];
     if (!o.supports)
@@ -69,6 +74,10 @@ int jit_rs_options::search_rs_option_index(const char* str)
 {
     for (std::size_t i = 0; i < options_cache.size(); i++)
     {
+        if (!options_cache[i].name)
+        {
+            continue;
+        }
         if (options_cache[i].name == str)
         {
             return (int)i;
@@ -91,7 +100,12 @@ void jit_rs_options::update_options(rs::device* dev)
         if (!dev)
         {
             o.supports = false;
+            o.name = nullptr;
             o.value = -1.0l;
+            o.min = -1.0l;
+            o.max = -1.0l;
+            o.step = -1.0l;
+            o.def = -1.0l;
             continue;
         }
         try
@@ -114,10 +128,6 @@ void jit_rs_options::update_options(rs::device* dev)
 // custom getter
 t_jit_err rs_option_get(t_jit_realsense *x, void *attr, long *ac, t_atom **av)
 {
-    // get option name
-    t_symbol* name = (t_symbol*)jit_object_method(attr, _jit_sym_getname);
-    double result = x->rs_options.get_value_from_name(name->s_name);
-
     if (!*ac || !*av)
     {
         // allocate memory
@@ -131,6 +141,15 @@ t_jit_err rs_option_get(t_jit_realsense *x, void *attr, long *ac, t_atom **av)
         }
     }
 
+    // get option name
+    t_symbol* name = (t_symbol*)jit_object_method(attr, _jit_sym_getname);
+
+    double result = -1.0l;
+    if (name)
+    {
+        result = x->rs_options.get_value_from_name(name->s_name);
+    }
+
     jit_atom_setfloat(*av, result);
     return JIT_ERR_NONE;
 }
@@ -140,6 +159,11 @@ t_jit_err rs_option_set(t_jit_realsense *x, void *attr, long ac, t_atom *av) {
     // get option name
     t_symbol* name = (t_symbol*)jit_object_method(attr, _jit_sym_getname);
     double v = -1.0l;
+
+    if (!name) {
+        error("set invalid symbol");
+        return JIT_ERR_INVALID_PTR;
+    }
 
     if (!ac || !av)
     {
