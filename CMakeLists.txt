@@ -1,5 +1,6 @@
-set(CMAKE_OSX_ARCHITECTURES "i386;x86_64")
- 
+set(CMAKE_OSX_ARCHITECTURES "x86_64")
+set(CMAKE_BUILD_TYPE Release)
+
 cmake_minimum_required(VERSION 3.5)
 project(jit.realsense)
 set(LibUSB_FIND_STATIC ON)
@@ -21,7 +22,7 @@ add_subdirectory(librealsense)
 set(CMAKE_POSITION_INDEPENDENT_CODE True)
 set(BUILD_SHARED_LIBS ON)
 
-set(C74SUPPORT ${CMAKE_CURRENT_SOURCE_DIR}/max-sdk/source/c74support)
+set(C74SUPPORT ${CMAKE_CURRENT_SOURCE_DIR}/max-sdk/source/max-sdk-base/c74support)
 set(MAX_ROOT ${C74SUPPORT}/max-includes)
 set(MSP_ROOT ${C74SUPPORT}/msp-includes)
 set(JIT_ROOT ${C74SUPPORT}/jit-includes)
@@ -59,6 +60,9 @@ elseif(APPLE)
             HINTS
             /System/Library/Frameworks/
             /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/Headers/
+            /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/Headers
+            /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/Headers
+            /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/Headers
             /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/Headers
             /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/Headers
             /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/Headers
@@ -68,16 +72,27 @@ elseif(APPLE)
 	set(CMAKE_INSTALL_NAME_DIR @rpath)
 	set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 	set(CMAKE_INSTALL_RPATH "@loader_path/")
+
+        # libusb settings
+        find_package(PkgConfig REQUIRED)
+        find_package (Threads REQUIRED)
+        pkg_search_module(LIBUSB1 REQUIRED libusb-1.0)
+        if(LIBUSB1_FOUND)
+            include_directories(SYSTEM ${LIBUSB1_INCLUDE_DIRS})
+            link_directories(${LIBUSB1_LIBRARY_DIRS})
+        else()
+            message( FATAL_ERROR "Failed to find libusb-1.0" )
+        endif(LIBUSB1_FOUND)
 endif()
 
-add_library(jit.realsense MODULE jit.realsense.cpp max.jit.realsense.cpp)
+add_library(jit.realsense MODULE jit.realsense.cpp max.jit.realsense.cpp rs_options.cpp)
 target_link_libraries(jit.realsense PRIVATE MaxAPI Jitter realsense)
 set_target_properties(jit.realsense PROPERTIES CXX_STANDARD 14)
 
 if(APPLE)
 	find_library(coreFoundation CoreFoundation)
 	find_library(iokit IOKit)
-	target_link_libraries(jit.realsense PUBLIC ${coreFoundation} ${iokit} objc)
+	target_link_libraries(jit.realsense PUBLIC ${LIBUSB1_LIBRARIES} ${coreFoundation} ${iokit} objc)
 	target_compile_options(jit.realsense PUBLIC
 		-pipe
 		-Weverything
