@@ -3,4 +3,4 @@
 	url = https://github.com/Cycling74/max-sdk
 [submodule "librealsense"]
 	path = librealsense
-	url = https://github.com/mesotokyo/jit.realsense-legacy
+	url = https://github.com/mesotokyo/librealsense1
