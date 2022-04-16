@@ -319,11 +319,13 @@ t_jit_err jit_realsense_init(void)
     add_output_attribute("rs_stream", 0, &jit_rs_streaminfo::stream);
     CLASS_ATTR_LABEL(s_jit_realsense_class, "rs_stream", 0, "Out 1 Stream");
     class_attr_enumindex(s_jit_realsense_class, "rs_stream",
-                         "Depth", "Color", "Infrared", "Infrared 2",
-                         "Fisheye",
-                         "Points", "Rectified color", "Color -> Depth",
-                         "Infrared 2 -> Depth", "Depth -> Color", "Depth -> Rectified color",
-                         "Depth -> Infrared 2");
+                         "DEPTH", "COLOR", "INFRARED", "INFRARED2",
+                         "FISHEYE",
+                         "POINTS", "RECTIFIED_COLOR", "COLOR_ALIGNED_TO_DEPTH",
+                         "INFRARED2_ALIGNED_TO_DEPTH",
+                         "DEPTH_ALIGNED_TO_COLOR",
+                         "DEPTH_ALIGNED_TO_RECTIFIED_COLOR",
+                         "DEPTH_ALIGNED_TO_INFRARED2");
 /*
     add_output_attribute("rs_format", 0, &jit_rs_streaminfo::format);
     CLASS_ATTR_LABEL(s_jit_realsense_class, "rs_format", 0, "Out 1 Format");
@@ -348,11 +350,13 @@ t_jit_err jit_realsense_init(void)
             add_output_attribute(attr, i, &jit_rs_streaminfo::stream);
             CLASS_ATTR_LABEL(s_jit_realsense_class, attr.c_str(), 0, pretty.c_str());
             class_attr_enumindex(s_jit_realsense_class, attr,
-                                 "Depth", "Color", "Infrared", "Infrared 2",
-                                 "Fisheye",
-                                 "Points", "Rectified color", "Color -> Depth",
-                                 "Infrared 2 -> Depth", "Depth -> Color", "Depth -> Rectified color",
-                                 "Depth -> Infrared 2");
+                         "DEPTH", "COLOR", "INFRARED", "INFRARED2",
+                         "FISHEYE",
+                         "POINTS", "RECTIFIED_COLOR", "COLOR_ALIGNED_TO_DEPTH",
+                         "INFRARED2_ALIGNED_TO_DEPTH",
+                         "DEPTH_ALIGNED_TO_COLOR",
+                         "DEPTH_ALIGNED_TO_RECTIFIED_COLOR",
+                         "DEPTH_ALIGNED_TO_INFRARED2");
         }
 /*
         {
